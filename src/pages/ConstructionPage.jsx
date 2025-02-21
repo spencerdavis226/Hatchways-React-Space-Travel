@@ -7,6 +7,7 @@ const ConstructionPage = () => {
   const [capacity, setCapacity] = useState(1);
   const [description, setDescription] = useState('');
   const [error, setError] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const navigate = useNavigate();
 
@@ -18,6 +19,8 @@ const ConstructionPage = () => {
       setError('All fields are required!');
       return;
     }
+
+    setIsSubmitting(true);
 
     try {
       const response = await SpaceTravelApi.buildSpacecraft({
@@ -41,6 +44,8 @@ const ConstructionPage = () => {
       }
     } catch (err) {
       setError('An error occurred while creating the spacecraft.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -75,7 +80,9 @@ const ConstructionPage = () => {
           />
         </label>
 
-        <button type="submit">Create Spacecraft</button>
+        <button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? 'Creating...' : 'Create Spacecraft'}
+        </button>
       </form>
     </div>
   );

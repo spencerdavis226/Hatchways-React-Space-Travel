@@ -32,9 +32,7 @@ const SpacecraftsPage = () => {
     try {
       await SpaceTravelApi.destroySpacecraftById({ id });
 
-      // After deletion, refetch spacecrafts to update UI
-      const updatedSpacecrafts = await SpaceTravelApi.getSpacecrafts();
-      setSpacecrafts(updatedSpacecrafts.data);
+      setSpacecrafts((prev) => prev.filter((craft) => craft.id !== id));
     } catch (err) {
       console.error('Failed to delete spacecraft:', err);
     } finally {
