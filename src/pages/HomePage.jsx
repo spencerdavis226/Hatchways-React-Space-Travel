@@ -12,7 +12,11 @@ const HomePage = () => {
         <ul>
           <li>
             <Link to="/spacecrafts">View Spacecraft</Link>
+          </li>
+          <li>
             <Link to="/construct">Construct a Spacecraft</Link>
+          </li>
+          <li>
             <Link to="/planets">Explore Planets</Link>
           </li>
         </ul>

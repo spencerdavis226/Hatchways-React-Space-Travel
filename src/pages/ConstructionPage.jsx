@@ -1,6 +1,9 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SpaceTravelApi from '../services/SpaceTravelApi';
+import BackButton from '../components/BackButton';
+import Notification from '../components/Notification';
+import SpaceTravelContext from '../context/SpaceTravelContext';
 
 const ConstructionPage = () => {
   const [name, setName] = useState('');
@@ -10,17 +13,23 @@ const ConstructionPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const navigate = useNavigate();
+  const { setSpacecrafts } = useContext(SpaceTravelContext);
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevents page refresh
+    e.preventDefault();
 
-    // Ensure all fields are filled before submission
-    if (!name || !capacity || !description) {
-      setError('All fields are required!');
+    // Basic validation: ensure name is provided and capacity is positive
+    if (!name.trim()) {
+      setError('Please provide a spacecraft name.');
+      return;
+    }
+    if (capacity <= 0) {
+      setError('Capacity must be a positive number.');
       return;
     }
 
     setIsSubmitting(true);
+    setError(null);
 
     try {
       const response = await SpaceTravelApi.buildSpacecraft({
@@ -30,55 +39,57 @@ const ConstructionPage = () => {
         pictureUrl: null,
       });
 
+      // If API didn't return data, fetch spacecrafts manually
       if (!response.data) {
-        // If the API didn't return data, fetch spacecrafts manually
+        console.warn(
+          'API did not return spacecraft data. Fetching manually...'
+        );
         const updatedSpacecrafts = await SpaceTravelApi.getSpacecrafts();
-
-        if (updatedSpacecrafts.data.length > 0) {
-          navigate('/spacecrafts'); // Redirect if new data exists
-        } else {
-          setError('Spacecraft creation failed. Please try again.');
-        }
+        setSpacecrafts(updatedSpacecrafts.data);
       } else {
-        navigate('/spacecrafts'); // Successful creation
+        setSpacecrafts((prev) => [...prev, response.data]);
       }
+
+      navigate('/spacecrafts');
     } catch (err) {
-      setError('An error occurred while creating the spacecraft.');
+      setError(err.message || 'An error occurred.');
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div>
+    <div className="construction-page">
+      <BackButton />
       <h1>Construct a New Spacecraft</h1>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      <Notification
+        message={error}
+        type="error"
+        onClose={() => setError(null)}
+      />
       <form onSubmit={handleSubmit}>
-        <label>
-          Name:
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-        </label>
+        <label htmlFor="name">Name:</label>
+        <input
+          id="name"
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
 
-        <label>
-          Capacity:
-          <input
-            type="number"
-            value={capacity}
-            onChange={(e) => setCapacity(Number(e.target.value))}
-          />
-        </label>
+        <label htmlFor="capacity">Capacity:</label>
+        <input
+          id="capacity"
+          type="number"
+          value={capacity}
+          onChange={(e) => setCapacity(Number(e.target.value))}
+        />
 
-        <label>
-          Description:
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
-        </label>
+        <label htmlFor="description">Description:</label>
+        <textarea
+          id="description"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+        />
 
         <button type="submit" disabled={isSubmitting}>
           {isSubmitting ? 'Creating...' : 'Create Spacecraft'}

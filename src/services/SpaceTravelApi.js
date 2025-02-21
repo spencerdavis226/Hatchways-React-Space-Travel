@@ -28,7 +28,10 @@ class SpaceTravelApi {
   }
 
   static async destroySpacecraftById({ id }) {
-    return SpaceTravelMockApi.destroySpacecraftById({ id });
+
+    const response = await SpaceTravelMockApi.destroySpacecraftById({ id });
+
+    return response;
   }
 
   static async sendSpacecraftToPlanet({ spacecraftId, targetPlanetId }) {

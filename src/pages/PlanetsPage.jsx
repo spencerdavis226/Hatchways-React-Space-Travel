@@ -1,36 +1,16 @@
-import { useState, useEffect } from 'react';
+import { useState, useContext } from 'react';
+import SpaceTravelContext from '../context/SpaceTravelContext';
 import SpaceTravelApi from '../services/SpaceTravelApi';
+import BackButton from '../components/BackButton';
 
 const PlanetsPage = () => {
-  const [planets, setPlanets] = useState([]);
-  const [spacecrafts, setSpacecrafts] = useState([]);
   const [selectedTransfers, setSelectedTransfers] = useState({});
   const [loadingTransfers, setLoadingTransfers] = useState({});
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
 
-  useEffect(() => {
-    async function fetchPlanets() {
-      try {
-        const [planetsResponse, spacecraftsResponse] = await Promise.all([
-          SpaceTravelApi.getPlanets(),
-          SpaceTravelApi.getSpacecrafts(),
-        ]);
-
-        if (planetsResponse.isError || spacecraftsResponse.isError) {
-          setError('Failed to load data.');
-        } else {
-          setPlanets(planetsResponse.data);
-          setSpacecrafts(spacecraftsResponse.data);
-        }
-      } catch (err) {
-        setError('An error occured while fetching data.');
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchPlanets();
-  }, []);
+  const { planets, spacecrafts, loading, setPlanets, setSpacecrafts } =
+    useContext(SpaceTravelContext);
 
   const handleSelectPlanet = (spacecraftId, targetPlanetId) => {
     setSelectedTransfers((prev) => ({
@@ -40,34 +20,83 @@ const PlanetsPage = () => {
   };
 
   const handleSendSpacecraft = async (spacecraftId) => {
-    if (!selectedTransfers[spacecraftId]) return; // No planet selected
-
+    if (selectedTransfers[spacecraftId] == null) return; // No planet selected
     setLoadingTransfers((prev) => ({ ...prev, [spacecraftId]: true }));
 
     try {
-      await SpaceTravelApi.sendSpacecraftToPlanet({
+      const response = await SpaceTravelApi.sendSpacecraftToPlanet({
         spacecraftId,
         targetPlanetId: selectedTransfers[spacecraftId],
       });
 
-      // Refetch data to update UI
+      if (response.isError) {
+        throw new Error(response.data);
+      }
+
       const updatedPlanets = await SpaceTravelApi.getPlanets();
-      const updatedSpacecrafts = await SpaceTravelApi.getSpacecrafts();
+      if (updatedPlanets.isError) {
+        throw new Error('Failed to refresh planets');
+      }
       setPlanets(updatedPlanets.data);
+
+      const updatedSpacecrafts = await SpaceTravelApi.getSpacecrafts();
+      if (updatedSpacecrafts.isError) {
+        throw new Error('Failed to refresh spacecrafts');
+      }
       setSpacecrafts(updatedSpacecrafts.data);
+
+      setSuccessMessage('Spacecraft successfully transferred!');
     } catch (err) {
-      console.error('Failed to send spacecraft:, err');
+      setErrorMessage(
+        err.message || 'Failed to send spacecraft. Please try again.'
+      );
     } finally {
       setLoadingTransfers((prev) => ({ ...prev, [spacecraftId]: false }));
     }
   };
 
   if (loading) return <h2>Loading planets...</h2>;
-  if (error) return <h2 style={{ color: 'red' }}>{error}</h2>;
+  if (!planets || planets.length === 0)
+    return <h2 style={{ color: 'red' }}>No planets found.</h2>;
 
   return (
     <div>
+      <BackButton />
       <h1>Planets</h1>
+      {successMessage && (
+        <div
+          style={{
+            background: 'lightgreen',
+            padding: '10px',
+            marginBottom: '10px',
+          }}
+        >
+          <strong>{successMessage}</strong>
+          <button
+            onClick={() => setSuccessMessage(null)}
+            style={{ marginLeft: '10px' }}
+          >
+            ✖
+          </button>
+        </div>
+      )}
+      {errorMessage && (
+        <div
+          style={{
+            background: 'lightcoral',
+            padding: '10px',
+            marginBottom: '10px',
+          }}
+        >
+          <strong>{errorMessage}</strong>
+          <button
+            onClick={() => setErrorMessage(null)}
+            style={{ marginLeft: '10px' }}
+          >
+            ✖
+          </button>
+        </div>
+      )}
       <ul>
         {planets.map((planet) => (
           <li key={planet.id}>
@@ -81,7 +110,7 @@ const PlanetsPage = () => {
                   <li key={craft.id}>
                     {craft.name} (Capacity: {craft.capacity})
                     <select
-                      value={selectedTransfers[craft.id] || ''}
+                      value={selectedTransfers[craft.id] ?? ''}
                       onChange={(e) =>
                         handleSelectPlanet(craft.id, Number(e.target.value))
                       }
@@ -98,7 +127,7 @@ const PlanetsPage = () => {
                     <button
                       onClick={() => handleSendSpacecraft(craft.id)}
                       disabled={
-                        !selectedTransfers[craft.id] ||
+                        selectedTransfers[craft.id] == null ||
                         loadingTransfers[craft.id]
                       }
                     >

@@ -1,28 +1,14 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-
-// PAGES
-import HomePage from './pages/HomePage';
-import SpacecraftsPage from './pages/SpacecraftsPage';
-import SpacecraftDetailPage from './pages/SpacecraftDetailPage';
-import ConstructionPage from './pages/ConstructionPage';
-import PlanetsPage from './pages/PlanetsPage';
-import NotFoundPage from './pages/NotFoundPage';
-
-// STYLES
+import { SpaceTravelProvider } from './context/SpaceTravelContext';
+import AppRoutes from './routes/AppRoutes';
 import styles from './App.module.css';
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="spacecrafts" element={<SpacecraftsPage />} />
-        <Route path="spacecrafts/:id" element={<SpacecraftDetailPage />} />
-        <Route path="construct" element={<ConstructionPage />} />
-        <Route path="planets" element={<PlanetsPage />} />
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
-    </Router>
+    <SpaceTravelProvider>
+      <div className={styles.app}>
+        <AppRoutes />
+      </div>
+    </SpaceTravelProvider>
   );
 }
 
