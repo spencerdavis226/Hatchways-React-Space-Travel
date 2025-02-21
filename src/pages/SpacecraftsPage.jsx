@@ -6,6 +6,7 @@ const SpacecraftsPage = () => {
   const [spacecrafts, setSpacecrafts] = useState([]); // Stores spacecraft data
   const [loading, setLoading] = useState(true); // Tracks loading state
   const [error, setError] = useState(null); // Tracks API errors
+  const [deletingId, setDeletingId] = useState(null); // Tracks which spacecraft is being deleted
 
   useEffect(() => {
     async function fetchData() {
@@ -26,6 +27,21 @@ const SpacecraftsPage = () => {
     fetchData();
   }, []);
 
+  const handleDelete = async (id) => {
+    setDeletingId(id); // Sets the current spacecraft as deleting
+    try {
+      await SpaceTravelApi.destroySpacecraftById({ id });
+
+      // After deletion, refetch spacecrafts to update UI
+      const updatedSpacecrafts = await SpaceTravelApi.getSpacecrafts();
+      setSpacecrafts(updatedSpacecrafts.data);
+    } catch (err) {
+      console.error('Failed to delete spacecraft:', err);
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
   if (loading) return <h2>Loading spacecraft...</h2>;
   if (error) return <h2 style={{ color: 'red' }}>{error}</h2>;
 
@@ -39,6 +55,12 @@ const SpacecraftsPage = () => {
               <Link to={`/spacecrafts/${craft.id}`}>{craft.name}</Link>
             </h3>
             <p>Capacity: {craft.capacity}</p>
+            <button
+              onClick={() => handleDelete(craft.id)}
+              disabled={deletingId === craft.id} // Disable button if craft is being deleted
+            >
+              {deletingId === craft.id ? 'Deleting...' : 'Delete'}
+            </button>
           </li>
         ))}
       </ul>
