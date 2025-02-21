@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import SpaceTravelApi from '../services/SpaceTravelApi';
 
 const SpacecraftsPage = () => {
@@ -34,7 +35,9 @@ const SpacecraftsPage = () => {
       <ul>
         {spacecrafts.map((craft) => (
           <li key={craft.id}>
-            <h3>{craft.name}</h3>
+            <h3>
+              <Link to={`/spacecrafts/${craft.id}`}>{craft.name}</Link>
+            </h3>
             <p>Capacity: {craft.capacity}</p>
           </li>
         ))}

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import SpaceTravelApi from '../services/SpaceTravelApi';
 
 const SpacecraftDetailPage = () => {
@@ -7,6 +7,12 @@ const SpacecraftDetailPage = () => {
   const [spacecraft, setSpacecraft] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // Back button
+  const navigate = useNavigate();
+  const handleBackClick = () => {
+    navigate('/spacecrafts');
+  };
 
   useEffect(() => {
     async function fetchData() {
@@ -33,6 +39,7 @@ const SpacecraftDetailPage = () => {
 
   return (
     <div>
+      <button onClick={handleBackClick}>← Back to Spacecrafts</button>
       <h1>{spacecraft.name}</h1>
       <p>
         <strong>Capacity:</strong> {spacecraft.capacity}
