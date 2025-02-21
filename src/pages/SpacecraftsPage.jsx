@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import SpaceTravelContext from '../context/SpaceTravelContext';
 import SpaceTravelApi from '../services/SpaceTravelApi';
 import BackButton from '../components/BackButton';
+import styles from './SpacecraftsPage.module.css';
 
 const SpacecraftsPage = () => {
   const { spacecrafts, setSpacecrafts, loading } =
@@ -10,27 +11,16 @@ const SpacecraftsPage = () => {
   const [deletingId, setDeletingId] = useState(null);
 
   const handleDelete = async (id) => {
-    console.log(`Attempting to delete spacecraft with ID: ${id}`);
     setDeletingId(id);
-
     try {
       const response = await SpaceTravelApi.destroySpacecraftById({ id });
-      console.log('Delete API Response:', response);
-
       if (!response || response.isError) {
-        console.error('Error: Deletion failed in API.');
+        // Optionally handle the error here (e.g., set an error state)
         return;
       }
-
-      setSpacecrafts((prev) => {
-        const updatedList = prev.filter((craft) => craft.id !== id);
-        console.log('Updated spacecrafts list after deletion:', updatedList);
-        return [...updatedList];
-      });
-
-      console.log(`Spacecraft with ID: ${id} deleted successfully.`);
+      setSpacecrafts((prev) => prev.filter((craft) => craft.id !== id));
     } catch (err) {
-      console.error('Failed to delete spacecraft:', err);
+      // Optionally display an error message
     } finally {
       setDeletingId(null);
     }
@@ -39,22 +29,28 @@ const SpacecraftsPage = () => {
   if (loading) return <h2>Loading spacecraft...</h2>;
 
   return (
-    <div>
+    <div className={styles.spacecraftsPage}>
       <BackButton />
-      <h1>Spacecrafts</h1>
+      <h1 className={styles.spacecraftsPage__title}>Spacecrafts</h1>
       {!spacecrafts || spacecrafts.length === 0 ? (
-        <h2 style={{ color: 'red' }}>No spacecraft found.</h2>
+        <h2 className={styles.spacecraftsPage__noData}>No spacecraft found.</h2>
       ) : (
-        <ul>
+        <ul className={styles.spacecraftsPage__list}>
           {spacecrafts.map((craft) => (
-            <li key={craft.id}>
+            <li key={craft.id} className={styles.spacecraftsPage__item}>
               <h3>
-                <Link to={`/spacecrafts/${craft.id}`}>{craft.name}</Link>
+                <Link
+                  to={`/spacecrafts/${craft.id}`}
+                  className={styles.spacecraftsPage__link}
+                >
+                  {craft.name}
+                </Link>
               </h3>
               <p>Capacity: {craft.capacity}</p>
               <button
                 onClick={() => handleDelete(craft.id)}
                 disabled={deletingId === craft.id}
+                className={styles.spacecraftsPage__deleteButton}
               >
                 {deletingId === craft.id ? 'Deleting...' : 'Delete'}
               </button>

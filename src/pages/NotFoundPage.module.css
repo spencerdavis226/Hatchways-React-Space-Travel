@@ -1,0 +1,30 @@
+.notFoundPage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 80vh;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.6);
+    border: 1px solid #333;
+    border-radius: 8px;
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 1rem;
+}
+
+.notFoundPage__title {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.notFoundPage__description {
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+.notFoundPage__link {
+    color: #00ffff;
+    font-weight: bold;
+    text-decoration: underline;
+}

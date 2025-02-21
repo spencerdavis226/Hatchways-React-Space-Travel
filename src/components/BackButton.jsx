@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import styles from './BackButton.module.css';
 
 const BackButton = ({ fallbackPath = '/' }) => {
   const navigate = useNavigate();
@@ -12,7 +13,7 @@ const BackButton = ({ fallbackPath = '/' }) => {
   };
 
   return (
-    <button onClick={handleBack} style={{ marginBottom: '10px' }}>
+    <button onClick={handleBack} className={styles.backButton}>
       ← Back
     </button>
   );

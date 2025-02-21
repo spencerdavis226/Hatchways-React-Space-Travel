@@ -1,0 +1,28 @@
+.notification {
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.notificationError {
+    background-color: lightcoral;
+}
+
+.notificationSuccess {
+    background-color: lightgreen;
+}
+
+.message {
+    font-weight: bold;
+}
+
+.closeButton {
+    margin-left: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+}

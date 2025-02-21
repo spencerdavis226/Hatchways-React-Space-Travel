@@ -1,0 +1,59 @@
+/* HomePage.module.css */
+
+/* A top-level container to group page content */
+.homePage {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 1rem;
+    background-color: rgba(0, 0, 0, 0.6);
+    /* subtle overlay to make text more legible */
+    border: 1px solid #333;
+    border-radius: 8px;
+}
+
+/* Main heading with larger font and spacing */
+.homePage__title {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+/* Paragraph styling for better readability */
+.homePage__description {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+/* Navigation container */
+.homePage__nav {
+    margin-top: 1rem;
+    text-align: center;
+}
+
+/* List styling for nav items */
+.homePage__navList {
+    list-style: none;
+    display: inline-flex;
+    gap: 1rem;
+}
+
+/* Each nav item can have a subtle border or hover effect */
+.homePage__navItem {
+    border: 1px solid #444;
+    border-radius: 4px;
+    padding: 0.5rem 1rem;
+    transition: background-color 0.3s;
+}
+
+.homePage__navItem:hover {
+    background-color: #111;
+}
+
+/* Optional link styling within the nav item */
+.homePage__navLink {
+    color: #00ffff;
+    /* consistent with global link color, but you can override */
+    font-weight: bold;
+    text-transform: uppercase;
+}

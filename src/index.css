@@ -1,0 +1,27 @@
+/* Basic reset and theming */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    /* Space-themed background (replace with your own image or remove for a solid color) */
+    background: url('https://images.unsplash.com/photo-1446776811953-b23d57bd21aa') no-repeat center center fixed;
+    background-size: cover;
+
+    font-family: 'Arial', sans-serif;
+    color: #fff;
+    line-height: 1.5;
+}
+
+/* Make links stand out globally */
+a {
+    color: #00ffff;
+    /* bright aqua for links */
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}

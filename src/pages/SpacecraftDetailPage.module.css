@@ -1,0 +1,29 @@
+.spacecraftDetailPage {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 1rem;
+    background-color: rgba(0, 0, 0, 0.6);
+    border: 1px solid #333;
+    border-radius: 8px;
+}
+
+.spacecraftDetailPage__title {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.spacecraftDetailPage__info {
+    margin-bottom: 1rem;
+}
+
+.spacecraftDetailPage__image {
+    max-width: 100%;
+    margin-top: 1rem;
+    border: 1px solid #444;
+    border-radius: 4px;
+}
+
+.error {
+    color: red;
+    text-align: center;
+}

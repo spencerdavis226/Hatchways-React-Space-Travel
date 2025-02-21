@@ -2,6 +2,7 @@ import { useState, useContext } from 'react';
 import SpaceTravelContext from '../context/SpaceTravelContext';
 import SpaceTravelApi from '../services/SpaceTravelApi';
 import BackButton from '../components/BackButton';
+import styles from './PlanetsPage.module.css';
 
 const PlanetsPage = () => {
   const [selectedTransfers, setSelectedTransfers] = useState({});
@@ -60,9 +61,9 @@ const PlanetsPage = () => {
     return <h2 style={{ color: 'red' }}>No planets found.</h2>;
 
   return (
-    <div>
+    <div className={styles.planetsPage}>
       <BackButton />
-      <h1>Planets</h1>
+      <h1 className={styles.planetsPage__title}>Planets</h1>
       {successMessage && (
         <div
           style={{
@@ -97,13 +98,13 @@ const PlanetsPage = () => {
           </button>
         </div>
       )}
-      <ul>
+      <ul className={styles.planetsPage__planetList}>
         {planets.map((planet) => (
-          <li key={planet.id}>
+          <li key={planet.id} className={styles.planetsPage__planetItem}>
             <h3>{planet.name}</h3>
             <p>Population: {planet.currentPopulation}</p>
             <h4>Stationed Spacecraft:</h4>
-            <ul>
+            <ul className={styles.planetsPage__spacecraftList}>
               {spacecrafts
                 .filter((craft) => craft.currentLocation === planet.id)
                 .map((craft) => (

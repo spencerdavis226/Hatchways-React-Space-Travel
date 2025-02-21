@@ -1,23 +1,30 @@
 import { Link } from 'react-router-dom';
+import styles from './HomePage.module.css';
 
 const HomePage = () => {
   return (
-    <div>
-      <h1>Welcome to Space Travel</h1>
-      <p>
+    <div className={styles.homePage}>
+      <h1 className={styles.homePage__title}>🚀 Welcome to Space Travel</h1>
+      <p className={styles.homePage__description}>
         Explore the universe by building, managing, and deploying spacecraft.
       </p>
 
-      <nav>
-        <ul>
-          <li>
-            <Link to="/spacecrafts">View Spacecraft</Link>
+      <nav className={styles.homePage__nav}>
+        <ul className={styles.homePage__navList}>
+          <li className={styles.homePage__navItem}>
+            <Link to="/spacecrafts" className={styles.homePage__navLink}>
+              View Spacecraft
+            </Link>
           </li>
-          <li>
-            <Link to="/construct">Construct a Spacecraft</Link>
+          <li className={styles.homePage__navItem}>
+            <Link to="/construct" className={styles.homePage__navLink}>
+              Construct a Spacecraft
+            </Link>
           </li>
-          <li>
-            <Link to="/planets">Explore Planets</Link>
+          <li className={styles.homePage__navItem}>
+            <Link to="/planets" className={styles.homePage__navLink}>
+              Explore Planets
+            </Link>
           </li>
         </ul>
       </nav>

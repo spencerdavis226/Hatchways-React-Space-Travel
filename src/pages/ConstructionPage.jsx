@@ -4,6 +4,7 @@ import SpaceTravelApi from '../services/SpaceTravelApi';
 import BackButton from '../components/BackButton';
 import Notification from '../components/Notification';
 import SpaceTravelContext from '../context/SpaceTravelContext';
+import styles from './ConstructionPage.module.css';
 
 const ConstructionPage = () => {
   const [name, setName] = useState('');
@@ -59,39 +60,54 @@ const ConstructionPage = () => {
   };
 
   return (
-    <div className="construction-page">
+    <div className={styles.constructionPage}>
       <BackButton />
-      <h1>Construct a New Spacecraft</h1>
+      <h1 className={styles.constructionPage__title}>
+        Construct a New Spacecraft
+      </h1>
       <Notification
         message={error}
         type="error"
         onClose={() => setError(null)}
       />
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="name">Name:</label>
+      <form onSubmit={handleSubmit} className={styles.constructionPage__form}>
+        <label htmlFor="name" className={styles.constructionPage__label}>
+          Name:
+        </label>
         <input
           id="name"
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
+          className={styles.constructionPage__input}
         />
 
-        <label htmlFor="capacity">Capacity:</label>
+        <label htmlFor="capacity" className={styles.constructionPage__label}>
+          Capacity:
+        </label>
         <input
           id="capacity"
           type="number"
           value={capacity}
           onChange={(e) => setCapacity(Number(e.target.value))}
+          className={styles.constructionPage__input}
         />
 
-        <label htmlFor="description">Description:</label>
+        <label htmlFor="description" className={styles.constructionPage__label}>
+          Description:
+        </label>
         <textarea
           id="description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
+          className={styles.constructionPage__textarea}
         />
 
-        <button type="submit" disabled={isSubmitting}>
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className={styles.constructionPage__submitButton}
+        >
           {isSubmitting ? 'Creating...' : 'Create Spacecraft'}
         </button>
       </form>
