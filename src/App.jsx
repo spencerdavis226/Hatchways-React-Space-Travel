@@ -25,7 +25,7 @@ function App() {
         <Route path="spacecrafts/:id" element={<SpacecraftDetailPage />} />
         <Route path="construct" element={<ConstructionPage />} />
         <Route path="planets" element={<PlanetsPage />} />
-        <Route path="*" element={<Navigate to="/" />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Router>
   );
