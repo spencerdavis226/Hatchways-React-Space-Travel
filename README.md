@@ -1,89 +1,142 @@
-## API 🔌
+Space Travel
 
-Our back-end engineers have developed an API for the web application. For this project, you are given a mock API in the starter code that stores the data in the local storage. You shouldn't touch the `/services/SpaceTravelMockApi.js` file, which mimics the back-end. Instead, you should use `/services/SpaceTravelApi.js`, which uses the API. In real life, you should create such a file that uses the `axios` library to use an API.
+A React-based application that lets users explore a simulated space travel experience. Build and manage spacecraft, dispatch them to planets, and explore a solar system using a mock API.
 
-Hint: You can clear the local storage to start from scratch.
+Overview
 
-### Data Structures
+This project is built using React, Vite, and CSS Modules. It employs a modern folder structure and follows best practices for styling (BEM naming conventions), state management (React Context), and error handling (Error Boundary). Basic tests are included using Vitest and React Testing Library.
 
-#### Response
+Features
+• Home Page: Provides an overview and simple navigation links.
+• Spacecrafts Page: Displays a list of spacecraft with options to view details and delete them.
+• Spacecraft Detail Page: Shows comprehensive information about a selected spacecraft.
+• Construction Page: Allows building new spacecraft (with basic form validation).
+• Planets Page: Lists planets, shows stationed spacecraft, and enables dispatching spacecraft to other planets.
+• Error Handling: An Error Boundary catches unexpected runtime errors.
+• Testing: Basic tests demonstrate functionality (BackButton, Notification, ErrorBoundary, etc.).
+• Routing: Uses React Router with a dedicated routes folder and a fallback for unmatched routes.
 
-```JavaScript
+Folder Structure
+src
+├─ components
+│ ├─ BackButton.jsx
+│ ├─ ErrorBoundary.jsx
+│ ├─ Notification.jsx
+│ └─ ... (other reusable components)
+├─ context
+│ └─ SpaceTravelContext.jsx
+├─ pages
+│ ├─ HomePage.jsx
+│ ├─ SpacecraftsPage.jsx
+│ ├─ SpacecraftDetailPage.jsx
+│ ├─ ConstructionPage.jsx
+│ ├─ PlanetsPage.jsx
+│ └─ NotFoundPage.jsx
+├─ routes
+│ └─ AppRoutes.jsx
+├─ services
+│ ├─ SpaceTravelApi.js
+│ └─ SpaceTravelMockApi.js
+├─ styles
+│ ├─ index.css
+│ ├─ App.module.css
+│ └─ ... (other .module.css files)
+├─ App.jsx
+├─ main.jsx
+└─ ...
+• components: Reusable UI components (BackButton, Notification, ErrorBoundary, etc.).
+• context: React Context provider (SpaceTravelContext) for global state management.
+• pages: Full-page components (HomePage, SpacecraftsPage, ConstructionPage, PlanetsPage, etc.).
+• routes: Contains routing logic (AppRoutes.jsx) defining how pages are rendered.
+• services: Contains API service files (SpaceTravelApi.js and SpaceTravelMockApi.js).
+
+API
+
+The back-end is simulated using a mock API. Do not modify the /services/SpaceTravelMockApi.js file. Instead, use the /services/SpaceTravelApi.js to interact with the API.
+
+Data Structures
+
+Response
 {
-  isError: <boolean>,
-  data: <any>
+isError: <boolean>,
+data: <any>
 }
-```
 
-#### Planet
-
-```JavaScript
+Planet
 {
-  id: <int>, // means data type is an integer
-  name: <string>,
-  currentPopulation: <int>,
-  pictureUrl: [<string>] // means optional
+id: <int>,
+name: <string>,
+currentPopulation: <int>,
+pictureUrl: <string> (optional)
 }
-```
 
-#### Spacecraft
-
-```JavaScript
+Spacecraft
 {
-  id: <string>,
-  name: <string>,
-  capacity: <int>,
-  description: <string>,
-  pictureUrl: [<string>],
-  currentLocation: <int>
+id: <string>,
+name: <string>,
+capacity: <int>,
+description: <string>,
+pictureUrl: <string> (optional),
+currentLocation: <int>
 }
-```
 
-### Methods
-
-#### getPlanets
-
-`getPlanets (): Array<planet>`
-Fetches all planets.
-
-#### getSpacecrafts
-
-`getSpacecrafts (): Array<spacecraft>`
-Fetches all spacecraft.
-
-#### getSpacecraftById
-
-`getSpacecraftById ({id: <string>}): <spacecraft>`
-Fetches a spacecraft by its ID.
-
-#### buildSpacecraft
-
-`createSpacecraft ({name: <string>, capacity: <int>, description <string>, pictureUrl: [<string>]}): void // means pictureUrl is optional`
-Builds a spacecraft on the Earth by generating an ID.
-
-#### destroySpacecraftById
-
-`destroySpacecraftById ({id: <int>}): void`
+API Methods
+• getPlanets()
+Returns an array of planets.
+• getSpacecrafts()
+Returns an array of spacecraft.
+• getSpacecraftById({ id })
+Returns a specific spacecraft by ID.
+• buildSpacecraft({ name, capacity, description, pictureUrl })
+Creates a new spacecraft. The ID is generated automatically.
+• destroySpacecraftById({ id })
 Deletes a spacecraft by its ID.
+• sendSpacecraftToPlanet({ spacecraftId, targetPlanetId })
+Dispatches a spacecraft from its current planet to another planet.
+• If the capacity exceeds the current population, it transfers as many people as possible.
+• Throws an error if dispatching to the same planet.
 
-#### sendSpacecraftToPlanet
+Installation
 
-`sendSpacecraftToPlanet ({spacecraftId: <string>, targetPlanetId: <int>}): void`
-Transfer people by sending the spacecraft from its currently located planet to the target planet.
+1. Clone the repository
+   git clone <repository-url>
+   cd Hatchways-React-Space-Travel
+2. Install dependencies
+   npm install
+3. Start the development server
+   npm run dev
+4. Clear local storage (Optional)
+   If you want a fresh dataset, open your browser’s dev tools and clear local storage.
 
-- If the capacity is greater than the current population of the currently located planet, it fills as much as it gets.
-- Throws an error if the target planet is the same as the currently located planet.
+Testing
 
-## Folder Structure
+This project uses Vitest and React Testing Library.
+npm run test
+• HomePage.test.jsx demonstrates a basic test ensuring the page renders.
+• BackButton.test.jsx checks navigation logic.
+• Notification.test.jsx verifies close functionality.
+• ErrorBoundary.test.jsx ensures errors are caught and fallback UI is displayed.
 
-The folder structure designed by our software architects ensures adherence to best practices:
+Deployment
 
-- `components`: Contains components that are used as building blocks for pages.
-- `context`: Contains providers that enable consuming components to subscribe to context changes.
-- `pages`: Contains components that are used as a page. Pages are the components used to be rendered by a route.
-- `routes`: Contains components that have route rendering logic.
-- `services`: Contains services to reach external APIs.
+For a production build, run:
+npm run build
 
-This project employs CSS modules for component-specific styling and embraces the BEM methodology for naming conventions. Aspired developers are encouraged to explore these practices further.
+Then preview locally with:
+npm run preview
 
-View the rubric for this assessment [here](https://storage.googleapis.com/hatchways.appspot.com/employers/springboard/student_rubrics/Space%20Travel%20Rubric.pdf)
+Styling
+• CSS Modules and BEM Methodology
+Each page or component has a corresponding .module.css file (e.g., HomePage.module.css, SpacecraftsPage.module.css).
+• Global Styles
+Shared resets and global settings are defined in index.css.
+• Dark Space Theme
+The background and text colors are set to a space-friendly dark style.
+
+Error Handling
+
+An Error Boundary component wraps your main routes, catching unexpected runtime errors and displaying a fallback UI.
+
+Contributing
+
+Contributions are welcome! If you’d like to add features or fix bugs, please open a pull request. 1. Fork the repo. 2. Create a new feature branch. 3. Commit and push changes. 4. Open a PR describing your changes.
