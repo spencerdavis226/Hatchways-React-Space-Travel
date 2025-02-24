@@ -1,25 +1,29 @@
-import { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
-import SpaceTravelApi from '../services/SpaceTravelApi';
-import BackButton from '../components/BackButton';
-import Notification from '../components/Notification';
-import SpaceTravelContext from '../context/SpaceTravelContext';
-import styles from './ConstructionPage.module.css';
+import { useState, useContext } from 'react'; // React hooks for managing state and context
+import { useNavigate } from 'react-router-dom'; // Hook for programmatic navigation
+import SpaceTravelApi from '../services/SpaceTravelApi'; // API service for backend calls
+import BackButton from '../components/BackButton'; // Component for navigating back
+import Notification from '../components/Notification'; // Component for displaying notifications
+import SpaceTravelContext from '../context/SpaceTravelContext'; // Context to share spacecraft data across components
+import styles from './ConstructionPage.module.css'; // CSS module for styling the component
 
+// ConstructionPage component: provides a form to create a new spacecraft.
 const ConstructionPage = () => {
-  const [name, setName] = useState('');
-  const [capacity, setCapacity] = useState(1);
-  const [description, setDescription] = useState('');
-  const [error, setError] = useState(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  // State variables for form inputs and UI state
+  const [name, setName] = useState(''); // Spacecraft name
+  const [capacity, setCapacity] = useState(1); // Spacecraft capacity (default to 1)
+  const [description, setDescription] = useState(''); // Spacecraft description
+  const [error, setError] = useState(null); // Error message state
+  const [isSubmitting, setIsSubmitting] = useState(false); // Tracks form submission status
 
-  const navigate = useNavigate();
-  const { setSpacecrafts } = useContext(SpaceTravelContext);
+  // Hooks for navigation and accessing context
+  const navigate = useNavigate(); // For redirecting after form submission
+  const { setSpacecrafts } = useContext(SpaceTravelContext); // Update the shared spacecraft list
 
+  // handleSubmit: manages form submission to create a new spacecraft.
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevent default form submission behavior
 
-    // Basic validation: ensure name is provided and capacity is positive
+    // Basic validation: name must not be empty and capacity must be positive
     if (!name.trim()) {
       setError('Please provide a spacecraft name.');
       return;
@@ -29,18 +33,19 @@ const ConstructionPage = () => {
       return;
     }
 
-    setIsSubmitting(true);
-    setError(null);
+    setIsSubmitting(true); // Indicate the form is submitting
+    setError(null); // Clear any previous error
 
     try {
+      // Attempt to build a new spacecraft via API
       const response = await SpaceTravelApi.buildSpacecraft({
         name,
         capacity,
         description,
-        pictureUrl: null,
+        pictureUrl: null, // No picture provided
       });
 
-      // If API didn't return data, fetch spacecrafts manually
+      // If the API does not return spacecraft data, fetch the updated list manually
       if (!response.data) {
         console.warn(
           'API did not return spacecraft data. Fetching manually...'
@@ -48,29 +53,35 @@ const ConstructionPage = () => {
         const updatedSpacecrafts = await SpaceTravelApi.getSpacecrafts();
         setSpacecrafts(updatedSpacecrafts.data);
       } else {
+        // Append the newly created spacecraft to the existing list
         setSpacecrafts((prev) => [...prev, response.data]);
       }
 
+      // Navigate to the spacecrafts overview page after successful creation
       navigate('/spacecrafts');
     } catch (err) {
+      // Set an error message if something goes wrong during the API call
       setError(err.message || 'An error occurred.');
     } finally {
-      setIsSubmitting(false);
+      setIsSubmitting(false); // Reset submission state regardless of success or failure
     }
   };
 
   return (
     <div className={styles.constructionPage}>
-      <BackButton />
+      <BackButton /> {/* Render back button for navigation */}
       <h1 className={styles.constructionPage__title}>
         Construct a New Spacecraft
       </h1>
+      {/* Display error notification if there is an error */}
       <Notification
         message={error}
         type="error"
         onClose={() => setError(null)}
       />
+      {/* Form for spacecraft creation */}
       <form onSubmit={handleSubmit} className={styles.constructionPage__form}>
+        {/* Spacecraft name input */}
         <label htmlFor="name" className={styles.constructionPage__label}>
           Name:
         </label>
@@ -82,6 +93,7 @@ const ConstructionPage = () => {
           className={styles.constructionPage__input}
         />
 
+        {/* Spacecraft capacity input */}
         <label htmlFor="capacity" className={styles.constructionPage__label}>
           Capacity:
         </label>
@@ -93,6 +105,7 @@ const ConstructionPage = () => {
           className={styles.constructionPage__input}
         />
 
+        {/* Spacecraft description input */}
         <label htmlFor="description" className={styles.constructionPage__label}>
           Description:
         </label>
@@ -103,6 +116,7 @@ const ConstructionPage = () => {
           className={styles.constructionPage__textarea}
         />
 
+        {/* Submit button: displays loading text when submitting */}
         <button
           type="submit"
           disabled={isSubmitting}
@@ -115,4 +129,4 @@ const ConstructionPage = () => {
   );
 };
 
-export default ConstructionPage;
+export default ConstructionPage; // Export the component for use in routing
